@@ -6,6 +6,7 @@ import pyxel
 from config import SCREEN_SIZE, DEFAULT_CAPTION
 from board import Board
 from player import Player
+from enemy import Enemy
 
 arrow_keymap = {pyxel.KEY_UP : (0, -1),
                 pyxel.KEY_DOWN : (0, 1),
@@ -32,23 +33,48 @@ class Game:
                            ship_lengths = [2,3,4,5], draw_ships = True,
                            offset_x = 30 + self.grid_size * self.max_index, offset_y = 30)
 
-        self.left_player = Player(player_colour=2, board=self.left_board, keymap=arrow_keymap)
-        self.right_player = Player(player_colour=2, board=self.right_board, keymap=wasd_keymap)
+        self.number_of_players = self.welcome_screen()
+
+        left_kwargs = dict(board=self.left_board, keymap=arrow_keymap)
+        right_kwargs = dict(board=self.right_board, keymap=wasd_keymap)
+        if self.number_of_players == 2:
+            self.players = [Player(**left_kwargs), Player(**right_kwargs)]
+        elif self.number_of_players == 1:
+            self.players = [Player(**left_kwargs), Enemy(**right_kwargs)]
+        else:
+            self.players = [Enemy(**left_kwargs), Enemy(**right_kwargs)]
 
         pyxel.init(*SCREEN_SIZE, caption=DEFAULT_CAPTION, quit_key=pyxel.KEY_Q)
         pyxel.run(self.update, self.draw)
 
-    def update(self):
-        self.left_player.update()
-        self.right_player.update()
+    def welcome_screen(self, linewidth=80, fillchar='='):
+        print("Battleships!".center(linewidth, fillchar))
+        print("\n\n")
+        pre = "! Human Error Detected !\n"
+        while True:
+            try:
+                humans = int(input("How many HUMAN players (0, 1, 2)?"))
+            except ValueError:
+                print(pre+"Integer number of humans only")
+                continue
 
+            if 0 <= humans <= 2:
+                return humans
+            elif humans < 0:
+                print(pre+"Real quantities of humans only")
+            elif humans > 2:
+                print(pre+"Excess of humans, cannot comply")
+
+    def update(self):
+        for player in self.players:
+            player.update()
+        
     def draw(self):
         pyxel.cls(0)
         self.left_board.draw()
         self.right_board.draw()
-        self.left_player.draw()
-        self.right_player.draw()
-
+        for player in self.players:
+            player.draw()
 
 if __name__ == "__main__":
     Game()

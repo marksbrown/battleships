@@ -1,5 +1,5 @@
 import pyxel
-from config import *
+from config import PLAYER_COLOUR, SHOT_COLOUR, VERBOSE
 
 class Player:
     """
@@ -7,8 +7,8 @@ class Player:
 
     Holds everything to do with the player including previous shots
     """
-    def __init__(self, player_colour, board, keymap, **kwargs):
-        self.player_colour = player_colour
+    def __init__(self, board, keymap, **kwargs):
+        self.colour = kwargs.get('player_colour', PLAYER_COLOUR)
         self.board = board  # which board is this player playing on!
         self.keymap = keymap
 
@@ -50,7 +50,7 @@ class Player:
     def draw(self):
         x = self.board.x(self.i)
         y = self.board.y(self.j)
-        pyxel.rect(x,y, self.size, self.size, self.player_colour)
+        pyxel.rect(x,y, self.size, self.size, self.colour)
 
         if self.shot_radius:
             delta = self.size // 2  # offset to centre!
