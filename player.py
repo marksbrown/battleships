@@ -7,9 +7,7 @@ class Player:
 
     Holds everything to do with the player including previous shots
     """
-    active_board = 0
     def __init__(self, player_colour, board, keymap, **kwargs):
-        Player.active_board += 1
         self.player_colour = player_colour
         self.board = board  # which board is this player playing on!
         self.keymap = keymap
@@ -22,7 +20,7 @@ class Player:
 
         # Weapons details
         self.shot_radius = 0
-        self.shot_colour = 5
+        self.shot_colour = kwargs.get('shot_colour', SHOT_COLOUR)
         
         assert isinstance(self.shots_fired, list), "Have you changed how shots are tracked?"
 
@@ -31,7 +29,7 @@ class Player:
 
     def update(self):
         for key in self.keymap:
-            if pyxel.btnr(key):
+            if pyxel.btnp(key):
                 x,y = self.keymap[key]
                 if 0 <= self.i+x < self.board.N:
                     self.i += x

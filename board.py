@@ -46,7 +46,6 @@ class Board:
         Place ship randomly into space(s) available.
         """
         while True:
-            
             axes = randint(0, self.N - 1)
             vertical = choice((-1,1))  # reverse or not reverse!
             to_check = [[axes, j][::vertical] for j in range(self.N)]
@@ -77,17 +76,11 @@ class Board:
         for i in range(self.N):
             for j in range(self.N):
                 self.draw_cell(i, j, self.grid_colour)
-                
 
     def draw(self):
         self.draw_grid()
         if self.draw_ships:
             for loc in self.ships:
                 self.draw_cell(*loc, SHIP_COLOUR, filled=True)
-
-class Screen:
-    """
-    Draw Enemy and Player Boards side by side
-    Draw pieces taken and pieces remaining also
-    """
-    pass
+            for loc in self._dead_ships:
+                self.draw.cell(*loc, DEAD_SHIP_COLOUR, filled=True)
