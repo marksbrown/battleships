@@ -4,7 +4,7 @@ Draw the current board
 import pyxel
 from random import choice, choices, random, randint, shuffle
 from itertools import tee
-from config import SHIP_COLOUR, VERBOSE
+from config import SHIP_COLOUR, VERBOSE, DEAD_SHIP_COLOUR
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
@@ -22,7 +22,7 @@ class Board:
         assert N > 1, "sanity check"
         self.N = N
         self.side = side
-        self._dead_ships = []
+        self.dead_ships = []
         self.ships = kwargs.get('ship_locations', [])  # override for Player
         if not self.ships:
             shuffle(ship_lengths)
@@ -82,5 +82,5 @@ class Board:
         if self.draw_ships:
             for loc in self.ships:
                 self.draw_cell(*loc, SHIP_COLOUR, filled=True)
-            for loc in self._dead_ships:
-                self.draw.cell(*loc, DEAD_SHIP_COLOUR, filled=True)
+            for loc in self.dead_ships:
+                self.draw_cell(*loc, DEAD_SHIP_COLOUR, filled=True)

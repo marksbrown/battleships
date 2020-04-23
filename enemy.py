@@ -49,12 +49,22 @@ class Enemy:
         for loc in self.shots_fired:
             self.board.draw_cell(*loc, self.shot_colour, filled=True)
 
+    def fire_shot(self):
+        self.shot_radius = self.size + 2
+        shot_fired = self.next_move()
+        self.shots_fired.append(shot_fired)
+        self.countdown += self.cooldown
+        
+        self.i, self.j = shot_fired
+
+        if shot_fired in self.board.ships:
+            self.board.ships.remove(shot_fired)
+            self.board.dead_ships.append(shot_fired)
+            
+
     def update(self):
         if not self.countdown:
-            self.shot_radius = self.size + 2
-            self.i, self.j = self.next_move()
-            self.shots_fired.append((self.i, self.j))
-            self.countdown += self.cooldown
+            self.fire_shot()
         else:
             self.countdown -= 1
 

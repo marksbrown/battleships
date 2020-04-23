@@ -47,6 +47,11 @@ class Player:
         self.shots_fired.append((x,y))
         self.shot_radius = self.size + 2
 
+
+        if (x,y) in self.board.ships:
+            self.board.ships.remove((x,y))
+            self.board.dead_ships.append((x,y))
+
     def draw(self):
         x = self.board.x(self.i)
         y = self.board.y(self.j)

@@ -71,10 +71,12 @@ class Game:
         
     def draw(self):
         pyxel.cls(0)
-        self.left_board.draw()
-        self.right_board.draw()
         for player in self.players:
             player.draw()
+
+        self.left_board.draw()
+        self.right_board.draw()
+        
 
 if __name__ == "__main__":
     Game()
