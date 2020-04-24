@@ -4,7 +4,7 @@ Draw the current board
 import pyxel
 from random import choice, choices, random, randint, shuffle
 from itertools import tee
-from config import SHIP_COLOUR, VERBOSE, DEAD_SHIP_COLOUR
+from config import SHIP_COLOUR, VERBOSE, DEAD_SHIP_COLOUR, TEXT_COLOUR
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
@@ -28,7 +28,11 @@ class Board:
             shuffle(ship_lengths)
             for length in ship_lengths:
                 self.ships += self.randomly_place_ship(length)
-                
+        if VERBOSE:
+            print(f"{len(self.ships)} Ships assigned to", self.ships)
+
+        assert len(self.ships) == sum(ship_lengths), "Incorrect number of ships placed!"
+
         # coordinates of all ships (game ends when this is empty!)
         self.grid_colour = kwargs.get('grid_colour', 2)
         self.missed_colour = kwargs.get('missed_colour', 3)
@@ -82,5 +86,7 @@ class Board:
         if self.draw_ships:
             for loc in self.ships:
                 self.draw_cell(*loc, SHIP_COLOUR, filled=True)
-            for loc in self.dead_ships:
-                self.draw_cell(*loc, DEAD_SHIP_COLOUR, filled=True)
+        for loc in self.dead_ships:
+            self.draw_cell(*loc, DEAD_SHIP_COLOUR, filled=True)
+
+        pyxel.text(self.offset_x, 10, f"Score {len(self.dead_ships)*10:03}", TEXT_COLOUR)

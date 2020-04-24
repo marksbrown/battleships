@@ -3,7 +3,7 @@ Battleships Implementation using Pyxel
 """
 
 import pyxel
-from config import SCREEN_SIZE, DEFAULT_CAPTION
+from config import SCREEN_SIZE, DEFAULT_CAPTION, TEXT_COLOUR, FPS
 from board import Board
 from player import Player
 from enemy import Enemy
@@ -25,7 +25,7 @@ class Game:
     def __init__(self, **kwargs):
         self.grid_size = kwargs.get('grid_size', 10)
         self.max_index = kwargs.get('N', 10)
-        
+        self.end_game = False
         self.left_board = Board(self.max_index, self.grid_size, 
                            ship_lengths = [2,3,4,5], draw_ships = True,
                            offset_x = 10, offset_y = 30)
@@ -44,7 +44,8 @@ class Game:
         else:
             self.players = [Enemy(**left_kwargs), Enemy(**right_kwargs)]
 
-        pyxel.init(*SCREEN_SIZE, caption=DEFAULT_CAPTION, quit_key=pyxel.KEY_Q)
+        pyxel.init(*SCREEN_SIZE, caption=DEFAULT_CAPTION, 
+                    fps=FPS, quit_key=pyxel.KEY_Q)
         pyxel.run(self.update, self.draw)
 
     def welcome_screen(self, linewidth=80, fillchar='='):
@@ -68,14 +69,30 @@ class Game:
     def update(self):
         for player in self.players:
             player.update()
-        
+
+        if not self.left_board.ships or not self.right_board.ships:
+            self.end_game = True
+
+    def game_over(self):
+        winner = 'left' if not self.left_board.ships else 'right'
+        sx, sy = SCREEN_SIZE
+        sx //= 3
+        sy //= 2
+        pyxel.text(sx, sy, f"{winner} player wins!", TEXT_COLOUR)
+            
+      
     def draw(self):
         pyxel.cls(0)
-        for player in self.players:
-            player.draw()
+        if self.end_game:
+            self.game_over()
+        else:
+            self.left_board.draw()
+            self.right_board.draw()
 
-        self.left_board.draw()
-        self.right_board.draw()
+            for player in self.players:
+                player.draw()
+
+            
         
 
 if __name__ == "__main__":

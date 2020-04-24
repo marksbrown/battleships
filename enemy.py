@@ -1,6 +1,6 @@
 import pyxel
 from random import shuffle
-from config import ENEMY_COLOUR, SHOT_COLOUR, VERBOSE
+from config import ENEMY_COLOUR, SHOT_COLOUR, VERBOSE, FPS
 
 class Enemy:
     """
@@ -13,7 +13,7 @@ class Enemy:
         self.shot_colour = kwargs.get('shot_colour', SHOT_COLOUR)
         self.shot_radius = 0
         self.countdown = 0
-        self.cooldown = kwargs.get('cooldown', 48)
+        self.cooldown = kwargs.get('cooldown', FPS)
         self.i = 0
         self.j = 0
         self.shots_fired = kwargs.get('shots_fired', [])
