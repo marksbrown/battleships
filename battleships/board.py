@@ -4,7 +4,7 @@ Draw the current board
 import pyxel
 from random import choice, choices, random, randint, shuffle
 from itertools import tee
-from config import SHIP_COLOUR, VERBOSE, DEAD_SHIP_COLOUR, TEXT_COLOUR, GRID_COLOUR, SHIP_LENGTHS
+from battleships.config import SHIP_COLOUR, VERBOSE, DEAD_SHIP_COLOUR, TEXT_COLOUR, GRID_COLOUR, SHIP_LENGTHS
 
 
 def pairwise(iterable):

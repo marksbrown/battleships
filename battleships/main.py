@@ -3,12 +3,10 @@ Battleships Implementation using Pyxel
 """
 
 import pyxel
-from config import SCREEN_SIZE, DEFAULT_CAPTION, TEXT_COLOUR, FPS, BACKGROUND_COLOUR, VERBOSE
-from board import Board
-from human import Human
-from enemy import Enemy
-
-from time import sleep
+from battleships.config import SCREEN_SIZE, DEFAULT_CAPTION, TEXT_COLOUR, FPS, BACKGROUND_COLOUR, VERBOSE
+from battleships.board import Board
+from battleships.human import Human
+from battleships.enemy import Enemy
 
 arrow_keymap = {pyxel.KEY_UP : (0, -1),
                 pyxel.KEY_DOWN : (0, 1),
@@ -41,10 +39,6 @@ class Game:
             self.number_of_players = 0
         else:
             self.number_of_players = self.welcome_screen()
-
-        for i in range(5,0,-1):
-            print(i)
-            sleep(1)
 
         if self.number_of_players == 2:
             self.left_player = Human(self.left_board, arrow_keymap)
@@ -113,7 +107,4 @@ class Game:
         self.left_player.draw()
         self.right_player.draw()
         
-        
 
-if __name__ == "__main__":
-    Game()

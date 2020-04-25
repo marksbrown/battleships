@@ -1,6 +1,6 @@
 import pyxel
-from config import HUMAN_COLOUR, VERBOSE
-from player import Player
+from battleships.config import HUMAN_COLOUR, VERBOSE
+from battleships.player import Player
 
 class Human(Player):
     """

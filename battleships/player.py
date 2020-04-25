@@ -1,6 +1,6 @@
 import pyxel
-from config import SHOT_COLOUR, VERBOSE
 from abc import abstractmethod, ABC
+from battleships.config import SHOT_COLOUR, VERBOSE
 
 
 class Player(ABC):

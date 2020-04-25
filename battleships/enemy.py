@@ -1,7 +1,7 @@
 import pyxel
 from random import shuffle
-from config import ENEMY_COLOUR, VERBOSE, FPS
-from player import Player
+from battleships.config import ENEMY_COLOUR, VERBOSE, FPS
+from battleships.player import Player
 
 class Enemy(Player):
     """
