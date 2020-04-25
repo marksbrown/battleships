@@ -1,61 +1,53 @@
 import pyxel
-from config import PLAYER_COLOUR, SHOT_COLOUR, VERBOSE
+from config import SHOT_COLOUR, VERBOSE
+from abc import abstractmethod, ABC
 
-class Player:
-    """
-    Player class
 
-    Holds everything to do with the player including previous shots
-    """
-    def __init__(self, board, keymap, **kwargs):
-        self.colour = kwargs.get('player_colour', PLAYER_COLOUR)
+class Player(ABC):
+
+    @property
+    def size(self):
+        return self.board.side
+    
+    def __init__(self, board, colour, **kwargs):
         self.board = board  # which board is this player playing on!
-        self.keymap = keymap
+        self.colour = colour
 
         # Initial position
-        self.i = kwargs.get('index_x', 0)
-        self.j = kwargs.get('index_y', 0)
+        self.i, self.j = [self.board.N // 2,]*2
         self.shots_fired = kwargs.get('shots_fired', [])
-        self.size = kwargs.get('size', 10)
 
         # Weapons details
-        self.shot_radius = 0
+        self.shot_radius = 0  # 0 is not fired
         self.shot_colour = kwargs.get('shot_colour', SHOT_COLOUR)
         
         assert isinstance(self.shots_fired, list), "Have you changed how shots are tracked?"
-
         assert 0 <= self.i < self.board.N, "invalid initial position (x)"
         assert 0 <= self.j < self.board.N, "invalid initial position (y)"
 
+    @abstractmethod
     def update(self):
-        for key in self.keymap:
-            if pyxel.btnp(key):
-                x,y = self.keymap[key]
-                if 0 <= self.i+x < self.board.N:
-                    self.i += x
-                if 0 <= self.j+y < self.board.N:
-                    self.j += y
-
-                if not x and not y:  # weapon's fire!
-                    if (self.i, self.j) not in self.shots_fired:  # can't fire at the same place twice!
-                        self.fire_shot(self.i,self.j)
+        pass
 
     def fire_shot(self, x, y):
-        if VERBOSE:
-            print(f"Shot fired at {x},{y}")
-
+        """
+        Returns True if shot lands on ship
+        """
         self.shots_fired.append((x,y))
-        self.shot_radius = self.size + 2
-
-
+        self.shot_radius = self.size + self.size // 10
+        
         if (x,y) in self.board.ships:
+            if VERBOSE:
+                print(f"A Hit! at : {x},{y}")
             self.board.ships.remove((x,y))
             self.board.dead_ships.append((x,y))
+            return True
+        return False
 
     def draw(self):
         x = self.board.x(self.i)
         y = self.board.y(self.j)
-        pyxel.rect(x,y, self.size, self.size, self.colour)
+        pyxel.rect(x, y, self.size, self.size, self.colour)
 
         if self.shot_radius:
             delta = self.size // 2  # offset to centre!
@@ -64,3 +56,5 @@ class Player:
 
         for loc in self.shots_fired:
             self.board.draw_cell(*loc, self.shot_colour, filled=True)
+
+        self.board.draw_ships()
